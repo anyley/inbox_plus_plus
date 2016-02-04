@@ -1,0 +1,1 @@
+watchify -t [ babelify --presets [ react ] ] options.js -o options.bundle.js -v

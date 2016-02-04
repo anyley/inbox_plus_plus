@@ -1,0 +1,85 @@
+<!doctype html>
+<!--
+ This page is shown when the extension button is clicked, because the
+ "browser_action" field in manifest.json contains the "default_popup" key with
+ value "popup.html".
+ -->
+<html>
+  <head>
+    <title>Getting Started Extension's Popup</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <script type="text/javascript" src="ext/jquery-2.2.0.min.js"></script>
+    <script type="text/javascript" src="ext/lodash.min.js"></script>
+    <script type="text/javascript" src="utils.js"></script>
+
+    <style>
+      body {
+        font-size: 10px;
+        overflow: hidden;
+      }
+      #status {
+        /* avoid an excessively wide status text */
+        white-space: pre;
+        text-overflow: ellipsis;
+        overflow: hidden;
+      }
+      .column {
+        width: 50%;
+      }
+      .userlist { 
+        margin:0;
+        padding:0;
+        width: 320px;
+      }
+      .user {
+        border: 1px solid white;
+        padding: 1px;
+      }
+      .user:hover {
+        cursor: default;
+        border: 1px solid red;
+        padding: 1px;
+      }
+      .femalebox {
+        width: 100px;
+        text-align: center;
+        padding-top: 5px;
+        font-size: 2em;
+        color: darkred;
+        border: 1px solid lightgray;
+        border-right: none;
+
+      }
+      .malebox {
+        width: 100px;
+        text-align: center;
+        padding-top: 5px;
+        font-size: 2em;
+        color: darkblue;
+        border: 1px solid lightgray;
+        border-left: none;
+
+      }
+      .seximg {
+        width: 18px;
+        height: 28px;
+      }
+      .header {
+        width: 320px;
+      }
+
+    </style>
+
+    <!--
+      - JavaScript and HTML must be in separate files: see our Content Security
+      - Policy documentation[1] for details and explanation.
+      -
+      - [1]: https://developer.chrome.com/extensions/contentSecurityPolicy
+     -->
+    <script src="bundle.js"></script>
+  </head>
+  <body>
+    <div id="status"></div>
+  </body>
+</html>
+

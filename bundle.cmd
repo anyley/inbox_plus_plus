@@ -1,0 +1,1 @@
+watchify -t [ babelify --presets [ react ] ] popup.js -o bundle.js -v
