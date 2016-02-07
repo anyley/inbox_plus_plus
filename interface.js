@@ -33,42 +33,6 @@ findUserComments('*', function(comment, username) {
 	});
 });
 
-}
-
-// Ищет все комментарии пользователя с именем username
-// если username == '*' возвращает все коментарии всех пользователей
-function findUserComments(username, callback) {
-	$(".c_wrote").each(function(item) {
-		var i=0;
-		var tmp = this.nextSibling;
-		var sex = $(this).text()=='Написал';
-
-		while(tmp.className!='c_user' && i<3) {
-			tmp = tmp.nextSibling;
-			i++;
-		}
-		if (tmp.className=='c_user' && (tmp.innerText==username || username=='*')) {
-			callback(this, tmp.innerText, sex);
-		}
-	});
-}
-
-
-// Инвертирует подсветку надписи Написал(а) в зависимости от статуса
-function setUserStatus(username, status) {
-	if (status) {	
-		findUserComments(username, function(object, name, sex) {
-			$(object).css('background', sex ? 'darkblue' : 'red');
-			$(object).css('color', 'white');
-		});
-	} else {
-		findUserComments(username, function(object, name, sex) {
-			$(object).css('background', '');
-			$(object).css('color', sex ? 'darkblue' : 'red');
-		});
-	}
-}
-
 chrome.extension.onMessage.addListener(function(request, sender, sendResponse) {
 	// console.log(request);
     if (request && request.cmd) {
@@ -144,3 +108,91 @@ chrome.extension.onMessage.addListener(function(request, sender, sendResponse) {
     	}
 	}
 });
+}
+
+// Ищет все комментарии пользователя с именем username
+// если username == '*' возвращает все коментарии всех пользователей
+function findUserComments(username, callback) {
+	$(".c_wrote").each(function(item) {
+		var i=0;
+		var tmp = this.nextSibling;
+		var sex = $(this).text()=='Написал';
+
+		while(tmp.className!='c_user' && i<3) {
+			tmp = tmp.nextSibling;
+			i++;
+		}
+		if (tmp.className=='c_user' && (tmp.innerText==username || username=='*')) {
+			callback(this, tmp.innerText, sex);
+		}
+	});
+}
+
+
+// Инвертирует подсветку надписи Написал(а) в зависимости от статуса
+function setUserStatus(username, status) {
+	if (status) {	
+		findUserComments(username, function(object, name, sex) {
+			$(object).css('background', sex ? 'darkblue' : 'red');
+			$(object).css('color', 'white');
+		});
+	} else {
+		findUserComments(username, function(object, name, sex) {
+			$(object).css('background', '');
+			$(object).css('color', sex ? 'darkblue' : 'red');
+		});
+	}
+}
+
+
+if (document.location.href.match(/^https:\/\/leprosorium.ru\/users\/.+\/comments$/)) {
+var usernameTag = $('.b-header_tagline > a');
+var usernameTag2 = $('.b-user_name-link');
+// console.log($(usernameTag).text());
+// console.log($(usernameTag2).text());
+if ($(usernameTag).text() == $(usernameTag2).text()) {
+console.log('Найден список комментариев: ' + $(usernameTag).text());
+$('.vote_result').css('width','70px');
+var statTags = $('.vote_result');
+var i=0;
+var comments = {};
+statTags.each(function () {
+	var commentId = $(this).attr('onclick').match(/\d+/);
+	comments[parseInt(commentId)] = parseInt($(this).text());
+	// console.log(++i + '. ' + commentId + ': ' + $(this).text());
+});
+
+chrome.runtime.sendMessage({
+		cmd: 'get_comments_stat',
+		comments: comments
+	}, function(response) {
+		// console.log(response);
+		if (response && response.status=='OK') {
+			// _.forIn(response.userlist, function(value, key) {
+			// 	// setUserStatus(key, true);
+			// });
+			var color;
+			statTags.each(function () {
+				var commentId = $(this).attr('onclick').match(/\d+/);
+				// comments[parseInt(commentId)] = parseInt($(this).text());
+				if (response.comments[commentId]!=undefined && parseInt(response.comments[commentId])!=NaN) {
+					var delta = comments[commentId] - parseInt(response.comments[commentId]);
+					// console.log(delta);
+					//$(this).insertBefore(delta);
+
+					if (delta!=NaN && delta!=0) {
+						color = (delta>0) ? 'darkgreen' : 'red';
+						$(this).html( 
+							$(this).text() + ' [<span style="color:'+color+'">' + ((delta>0)?'+':'') + delta + '</span>]'
+						);
+					}
+					
+				}
+				// console.log(++i + '. ' + commentId + ': ' + $(this).text());
+			});
+		}
+	}.bind(this));
+}
+}
+
+

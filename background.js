@@ -1,13 +1,40 @@
-var userlist = localStorage['userlist'];
-if (!userlist || userlist=='') {
-    userlist = {};
-    localStorage['userlist'] = JSON.stringify(userlist);
+var userlist = get_userlist();
+
+function get_userlist() {
+    var userlist = localStorage['userlist'];
+    if (!userlist || userlist=='') {
+        userlist = {};
+        localStorage['userlist'] = JSON.stringify(userlist);
+    } else {
+        userlist = JSON.parse(userlist);
+    }
+    return userlist;
 }
 
-var masklist = localStorage['masklist']
-if (!masklist || masklist=='' || masklist=='[]') {
-    masklist = ['inbox', 'инбокс', 'запиши', 'впиши'];
-    localStorage['masklist'] = JSON.stringify(masklist);
+var masklist = get_masklist();
+
+function get_masklist() {
+    var masklist = localStorage['masklist']
+    if (!masklist || masklist=='' || masklist=='[]') {
+        masklist = ['inbox', 'инбокс', 'запиши', 'впиши'];
+        localStorage['masklist'] = JSON.stringify(masklist);
+    } else {
+        masklist = JSON.parse(masklist);
+    }
+    return masklist;
+}
+
+var comments = get_comments();
+
+function get_comments() {
+    var comments = localStorage['comments'];
+    if (!comments || comments=='') {
+        comments = {};
+        localStorage['comments'] = JSON.stringify(comments);
+    } else {
+        comments = JSON.parse(comments);
+    }
+    return comments;
 }
 
 chrome.extension.onMessage.addListener(function(request, sender, sendResponse) {
@@ -16,25 +43,14 @@ chrome.extension.onMessage.addListener(function(request, sender, sendResponse) {
     if (request && request.cmd) {
         switch(request.cmd) {
         case 'get_user_list':
-            var userlist = localStorage['userlist'];
-            if (userlist) {
-                userlist = JSON.parse(userlist);
-            } else {
-                userlist = {};
-            }
+            userlist = get_userlist();
             sendResponse({status:'OK', userlist});
             break;
 
         case 'click':
             var username = request.username;
             var sex = request.sex;
-            var userlist = localStorage['userlist'];
-
-            if (userlist) {
-                userlist = JSON.parse(userlist);
-            } else {
-                userlist = {};
-            }
+            userlist = get_userlist();
 
             if (!userlist[username]) {
                 userlist[username] = {name:username, sex:sex};
@@ -60,12 +76,7 @@ chrome.extension.onMessage.addListener(function(request, sender, sendResponse) {
             break;
 
         case 'copy':
-            var userlist = localStorage['userlist'];
-            if (userlist) {
-                userlist = JSON.parse(userlist);
-            } else {
-                userlist = {};
-            }
+            userlist = get_userlist();
             //var userArray = _.sortBy(userlist, ['sex', 'name']);
             var userArray = _.keys(userlist).join(', ');
             var input = document.createElement('textarea');
@@ -77,6 +88,14 @@ chrome.extension.onMessage.addListener(function(request, sender, sendResponse) {
             input.remove();
 
             break;
+
+        case 'get_comments_stat':
+            var comments = get_comments();
+            sendResponse({status:'OK', comments:comments});
+            comments = JSON.stringify(request.comments);
+            localStorage['comments'] = comments;
+            break;
+
         }
 
     }
