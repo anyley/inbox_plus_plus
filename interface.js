@@ -1,5 +1,6 @@
 // Отрабатывать скрипт только на странице с комментариями
-if (document.location.href.match("leprosorium.ru/comments/")) {
+if (document.location.href.match("leprosorium.ru/comments/") ||
+	document.location.href.match("leprosorium.ru/my/inbox/")) {
 
 console.log('Найден пост с комментариями леперов');
 refreshAllUsers();
@@ -145,7 +146,7 @@ function setUserStatus(username, status) {
 }
 
 
-if (document.location.href.match(/^https:\/\/leprosorium.ru\/users\/.+\/comments$/)) {
+if (document.location.href.match(/^https:\/\/leprosorium.ru\/users\/.+\/comments\/$/)) {
 var usernameTag = $('.b-header_tagline > a');
 var usernameTag2 = $('.b-user_name-link');
 // console.log($(usernameTag).text());

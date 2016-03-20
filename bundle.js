@@ -110,12 +110,12 @@ var UserRow = React.createClass({
   click: function () {
     if (this.state.check) {
       delete userlist[this.props.username];
-      forTabsWithUrl("leprosorium.ru/comments/", function (tab) {
+      forTabsWithUrl("leprosorium.ru/", function (tab) {
         messageToTab(tab.id, { cmd: 'deleted', username: this.props.username });
       }.bind(this));
     } else {
       userlist[this.props.username] = { name: this.props.username, sex: this.props.sex };
-      forTabsWithUrl("leprosorium.ru/comments/", function (tab) {
+      forTabsWithUrl("leprosorium.ru/", function (tab) {
         messageToTab(tab.id, { cmd: 'added', username: this.props.username });
       }.bind(this));
     }
@@ -165,7 +165,7 @@ var KeywordButton = React.createClass({
 
   componentDidMount: function () {
     getCurrentTabUrl(function (url, tabId) {
-      if (url.match("leprosorium.ru/comments/")) {
+      if (url.match("leprosorium.ru/")) {
         this.setState({ disabled: '' });
         this.setState({ tabId: tabId });
       }
@@ -194,7 +194,7 @@ function mergeUserList(response) {
 
 function refreshAllTabs() {
   // Обновить все активные страницы
-  forTabsWithUrl("leprosorium.ru/comments/", function (tab) {
+  forTabsWithUrl("leprosorium.ru/", function (tab) {
     messageToTab(tab.id, { cmd: 'refresh' });
   }.bind(this));
 }
@@ -222,7 +222,7 @@ var AllButton = React.createClass({
 
   componentDidMount: function () {
     getCurrentTabUrl(function (url, tabId) {
-      if (url.match("leprosorium.ru/comments/")) {
+      if (url.match("leprosorium.ru/")) {
         this.setState({ disabled: '' });
         this.setState({ tabId: tabId });
       }
@@ -247,7 +247,7 @@ var ClearButton = React.createClass({
     userlistArchive = JSON.stringify(userlist);
     localStorage['userlist'] = userlistArchive;
     this.props.main.setState({});
-    forTabsWithUrl("leprosorium.ru/comments/", function (tab) {
+    forTabsWithUrl("leprosorium.ru/", function (tab) {
       messageToTab(tab.id, { cmd: 'clear' });
     }.bind(this));
   },
