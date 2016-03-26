@@ -153,15 +153,22 @@ var usernameTag2 = $('.b-user_name-link');
 // console.log($(usernameTag2).text());
 if ($(usernameTag).text() == $(usernameTag2).text()) {
 console.log('Найден список комментариев: ' + $(usernameTag).text());
-$('.vote_result').css('width','70px');
-var statTags = $('.vote_result');
-var i=0;
-var comments = {};
-statTags.each(function () {
-	var commentId = $(this).attr('onclick').match(/\d+/);
-	comments[parseInt(commentId)] = parseInt($(this).text());
-	// console.log(++i + '. ' + commentId + ': ' + $(this).text());
-});
+
+var interval = setInterval(function() {
+	if ($("#js-loader").css('display')=='none') {
+		$('.vote_result').css('width','70px');
+		var statTags = $('.vote_result');
+		var i=0;
+		var comments = {};
+		statTags.each(function () {
+			var commentId = $(this).attr('onclick').match(/\d+/);
+			comments[parseInt(commentId)] = parseInt($(this).text());
+			// console.log(++i + '. ' + commentId + ': ' + $(this).text());
+		});
+		clearInterval(interval);
+	}
+}, 200);
+
 
 chrome.runtime.sendMessage({
 		cmd: 'get_comments_stat',
